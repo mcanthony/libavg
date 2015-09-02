@@ -175,9 +175,11 @@ void EventDispatcher::testRemoveContact(EventPtr pEvent)
                 }
             }
         } else {
-            int rc = m_ContactMap.erase(
-                    dynamic_pointer_cast<CursorEvent>(pEvent)->getCursorID());
-            AVG_ASSERT(rc == 1);
+            if (pEvent->getSource() != Event::SKELETON) {
+                int rc = m_ContactMap.erase(
+                        dynamic_pointer_cast<CursorEvent>(pEvent)->getCursorID());
+                AVG_ASSERT(rc == 1);
+            }
         }
     }
 }

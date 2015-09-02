@@ -20,7 +20,7 @@
 #
 # Current versions can be found at www.libavg.de
 
-from libavg import *
+from libavg import avg, app, player 
 
 
 class TouchApp(app.MainDiv):
@@ -28,9 +28,14 @@ class TouchApp(app.MainDiv):
         if self.settings.getBoolean("app_fullscreen"):
             self.settings.set("app_resolution", "") # use screen resolution
 
+        self.skeletons = {}
+
     def onInit(self):
         self.userFrame = avg.ImageNode(href="", size=self.size, parent=self)
-        self.subscribe(avg.Node.CURSOR_DOWN, self.__onDown)
+        root = player.getRootNode()
+        root.subscribe(avg.Node.SKELETON_DOWN, self.__onSkeleton)
+        root.subscribe(avg.Node.SKELETON_MOTION, self.__onSkeleton)
+        root.subscribe(avg.Node.SKELETON_UP, self.__onSkeletonUp)
         app.instance.debugPanel.toggleTouchVisualization()
 
     def onFrame(self):
@@ -40,25 +45,11 @@ class TouchApp(app.MainDiv):
         except RuntimeError:
             pass
 
-    def __onDown(self, event):
-#        if event.source == avg.MOUSE:
-#            print event.type, event.button
-#        else:
-#            print event.type
-        if (event.contact):
-            event.contact.subscribe(avg.Contact.CURSOR_MOTION, self.__onContact)
-            event.contact.subscribe(avg.Contact.CURSOR_UP, self.__onContact)
-            contact = event.contact
-#            print "new contact: ", contact.id, event.pos, contact.age, \
-#                    contact.distancefromstart, contact.motionangle, contact.motionvec, \
-#                    contact.distancetravelled
-
-    def __onContact(self, event):
-        contact = event.contact
-#        print event.type, contact.id, event.pos, contact.age, \
-#                contact.distancefromstart, contact.motionangle, contact.motionvec, \
-#                contact.distancetravelled, event.speed
-
+    def __onSkeleton(self, event):
+        self.skeletons[event.userid] = event.joints
+   
+    def __onSkeletonUp(self, event):
+        del self.skeletons[event.userid]
 
 if __name__ == "__main__":
     app.App().run(TouchApp(), app_resolution="800x600", multitouch_enabled="true")

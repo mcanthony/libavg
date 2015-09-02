@@ -103,9 +103,8 @@ void TUIOInputDevice::start()
 
 vector<EventPtr> TUIOInputDevice::pollEvents()
 {
-    lock_guard lock(getMutex());
-
     vector<EventPtr> events = MultitouchInputDevice::pollEvents();
+    lock_guard lock(getMutex());
     vector<SkeletonPtr>::iterator it;
     for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ) {
         SkeletonPtr pSkeleton = *it;
@@ -151,7 +150,7 @@ void TUIOInputDevice::processBundle(const ReceivedBundle& bundle)
 {
     try {
         vector<SkeletonPtr>::iterator it;
-        for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ) {
+        for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ++it) {
             // TODO: Assuming one bundle per frame.
             (*it)->setStatus(Skeleton::UP);
         }
@@ -312,13 +311,13 @@ void TUIOInputDevice::processBody(osc::ReceivedMessageArgumentStream& args)
     for (unsigned i=0; i<m_Skeletons.size(); ++i) {
         if (m_Skeletons[i]->getUserID() == userID) {
             pCurSkeleton = m_Skeletons[i];
-            pCurSkeleton->setStatus(Skeleton::MOVE);
             pCurSkeleton->clearJoints();
             break;
         }
     }
     if (!pCurSkeleton) {
         pCurSkeleton = SkeletonPtr(new Skeleton(userID));
+        m_Skeletons.push_back(pCurSkeleton);
     }
     for(int i = 0; i < 25; ++i) {
         osc::int32 jointType;
