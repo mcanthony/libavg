@@ -45,7 +45,7 @@ public:
     Event::Type getEventType() const;
     SkelStatus getStatus() const;
     int getUserID() const;
-    const glm::vec3& getJoint(int i) const;
+    const std::vector<glm::vec3>& getJoints() const;
 
 private:
     SkelStatus m_Status;

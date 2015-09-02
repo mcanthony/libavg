@@ -51,7 +51,8 @@ class AVG_API Event {
             QUIT,
             UNKNOWN
         };
-        enum Source {MOUSE=1, TOUCH=2, TRACK=4, TANGIBLE=8, PEN=16, CUSTOM=32, NONE=64};
+        enum Source {MOUSE=1, TOUCH=2, TRACK=4, TANGIBLE=8, PEN=16, CUSTOM=32,
+                SKELETON=64, NONE=128};
     
         Event(Type type, Source source=NONE, int when=-1);
         Event(const Event& e);

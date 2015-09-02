@@ -26,7 +26,7 @@ using namespace std;
 namespace avg {
 
 SkeletonEvent::SkeletonEvent(SkeletonPtr pSkeleton)
-    : Event(pSkeleton->getEventType(), TRACK),
+    : Event(pSkeleton->getEventType(), SKELETON),
       m_pSkeleton(pSkeleton)
 {
 }
@@ -40,9 +40,9 @@ float SkeletonEvent::getUserID() const
     return m_pSkeleton->getUserID();
 }
 
-const glm::vec3& SkeletonEvent::getJoint(int i) const
+const vector<glm::vec3>& SkeletonEvent::getJoints() const
 {
-    return m_pSkeleton->getJoint(i);
+    return m_pSkeleton->getJoints();
 }
 
 }

@@ -67,6 +67,9 @@ void Node::registerType()
     pPubDef->addMessage("PEN_UP");
     pPubDef->addMessage("PEN_OVER");
     pPubDef->addMessage("PEN_OUT");
+    pPubDef->addMessage("SKELETON_DOWN");
+    pPubDef->addMessage("SKELETON_MOTION");
+    pPubDef->addMessage("SKELETON_UP");
     pPubDef->addMessage("END_OF_FILE");
     pPubDef->addMessage("SIZE_CHANGED");
     pPubDef->addMessage("KILLED");
@@ -617,6 +620,17 @@ string Node::getEventMessageID(const EventPtr& pEvent)
                     return "HOVER_OVER";
                 case Event::CURSOR_OUT:
                     return "HOVER_OUT";
+                default:
+                    break;
+            }
+        case Event::SKELETON:
+            switch (pEvent->getType()) {
+                case Event::CURSOR_DOWN:
+                    return "SKELETON_DOWN";
+                case Event::CURSOR_MOTION:
+                    return "SKELETON_MOTION";
+                case Event::CURSOR_UP:
+                    return "SKELETON_UP";
                 default:
                     break;
             }

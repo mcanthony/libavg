@@ -23,6 +23,8 @@
 
 #include "../base/Exception.h"
 
+using namespace std;
+
 namespace avg {
 
 Skeleton::Skeleton(int userID)
@@ -72,9 +74,9 @@ int Skeleton::getUserID() const
     return m_UserID;
 }
 
-const glm::vec3& Skeleton::getJoint(int i) const
+const vector<glm::vec3>& Skeleton::getJoints() const
 {
-    return m_Joints[i];
+    return m_Joints;
 }
 
 }

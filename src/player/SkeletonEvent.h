@@ -44,7 +44,7 @@ class AVG_API SkeletonEvent: public Event
         virtual ~SkeletonEvent();
 
         float getUserID() const;
-        const glm::vec3& getJoint(int i) const;
+        const std::vector<glm::vec3>& getJoints() const;
 
     private:
         SkeletonPtr m_pSkeleton;
