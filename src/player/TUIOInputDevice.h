@@ -25,6 +25,7 @@
 #include "../api.h"
 #include "MultitouchInputDevice.h"
 #include "Event.h"
+#include "Skeleton.h"
 #include "../oscpack/UdpSocket.h"
 #include "../oscpack/PacketListener.h"
 #include "../oscpack/OscReceivedElements.h"
@@ -45,6 +46,7 @@ public:
     TUIOInputDevice(const DivNodePtr& pEventReceiverNode=DivNodePtr(), int port=0);
     virtual ~TUIOInputDevice();
     virtual void start();
+    virtual std::vector<EventPtr> pollEvents();
    
     virtual unsigned getRemoteIP() const;
     virtual BitmapPtr getUserBmp() const;
@@ -66,6 +68,7 @@ private:
     void processAlive(osc::ReceivedMessageArgumentStream& args, 
             Event::Source source);
     void processUserID(osc::ReceivedMessageArgumentStream& args);
+    void processBody(osc::ReceivedMessageArgumentStream& args);
     void processIndexFrame(osc::ReceivedMessageArgumentStream& args);
     void setEventSpeed(CursorEventPtr pEvent, glm::vec2 speed);
     void getDeadIDs(const std::set<int>& liveIDs, std::set<int>& deadIDs, 
@@ -74,6 +77,7 @@ private:
     UdpListeningReceiveSocket* m_pSocket;
     unsigned m_RemoteIP;
     int m_Port;
+    std::vector<SkeletonPtr> m_Skeletons;
     BitmapPtr m_pUserBmp;
 #ifndef WIN32
     pthread_t m_Thread;

@@ -22,6 +22,7 @@
 #include "TUIOInputDevice.h"
 #include "TouchEvent.h"
 #include "TangibleEvent.h"
+#include "SkeletonEvent.h"
 #include "Player.h"
 #include "AVGNode.h"
 #include "TouchStatus.h"
@@ -100,6 +101,25 @@ void TUIOInputDevice::start()
 #endif
 }
 
+vector<EventPtr> TUIOInputDevice::pollEvents()
+{
+    lock_guard lock(getMutex());
+
+    vector<EventPtr> events = MultitouchInputDevice::pollEvents();
+    vector<SkeletonPtr>::iterator it;
+    for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ) {
+        SkeletonPtr pSkeleton = *it;
+        SkeletonEventPtr pEvent(new SkeletonEvent(pSkeleton));
+        events.push_back(pEvent);
+        if (pEvent->getType() == Event::CURSOR_UP) {
+            it = m_Skeletons.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    return events;
+}
+
 unsigned TUIOInputDevice::getRemoteIP() const
 {
     return m_RemoteIP;
@@ -130,6 +150,11 @@ void TUIOInputDevice::ProcessPacket(const char* pData, int size,
 void TUIOInputDevice::processBundle(const ReceivedBundle& bundle) 
 {
     try {
+        vector<SkeletonPtr>::iterator it;
+        for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ) {
+            // TODO: Assuming one bundle per frame.
+            (*it)->setStatus(Skeleton::UP);
+        }
         for (ReceivedBundle::const_iterator it = bundle.ElementsBegin(); 
                 it != bundle.ElementsEnd(); ++it) 
         {
@@ -163,8 +188,14 @@ void TUIOInputDevice::processMessage(const ReceivedMessage& msg)
                 processAlive(args, Event::TANGIBLE);
             } 
         } else if (strcmp(msg.AddressPattern(), "/tuioext/userid") == 0) {
-            if (strcmp(cmd, "set") == 0) { 
+            if (strcmp(cmd, "set") == 0) {
                 processUserID(args);
+            } else if (strcmp(cmd, "indexframe") == 0) {
+                processIndexFrame(args);
+            }
+        } else if (strcmp(msg.AddressPattern(), "/kinectuserid") == 0) {
+            if (strcmp(cmd, "body") == 0) {
+                processBody(args);
             } else if (strcmp(cmd, "indexframe") == 0) {
                 processIndexFrame(args);
             }
@@ -271,6 +302,31 @@ void TUIOInputDevice::processUserID(ReceivedMessageArgumentStream& args)
     }
     CursorEventPtr pEvent = pTouchStatus->getLastEvent();
     pEvent->setUserID(userID, jointID);
+}
+
+void TUIOInputDevice::processBody(osc::ReceivedMessageArgumentStream& args)
+{
+    int userID;
+    args >> userID;
+    SkeletonPtr pCurSkeleton;
+    for (int i=0; i<m_Skeletons.size(); ++i) {
+        if (m_Skeletons[i]->getUserID() == userID) {
+            pCurSkeleton = m_Skeletons[i];
+            pCurSkeleton->setStatus(Skeleton::MOVE);
+            pCurSkeleton->clearJoints();
+            break;
+        }
+    }
+    if (!pCurSkeleton) {
+        pCurSkeleton = SkeletonPtr(new Skeleton(userID));
+    }
+    for(int i = 0; i < 25; ++i) {
+        int jointType;
+        glm::vec3 pos;
+        args >> jointType >> pos.x >> pos.y >> pos.z;
+        pCurSkeleton->addJoint(pos);
+    }
+    args >> osc::EndMessage; 
 }
 
 void TUIOInputDevice::processIndexFrame(osc::ReceivedMessageArgumentStream& args)
