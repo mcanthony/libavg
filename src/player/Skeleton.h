@@ -34,21 +34,21 @@ namespace avg {
 class AVG_API Skeleton
 {
 public:
-    enum Status {DOWN, MOVE, UP};
+    enum SkelStatus {DOWN, MOVE, UP};
 
     Skeleton(int userID);
 
-    void setStatus(Status status);
+    void setStatus(SkelStatus status);
     void clearJoints();
     void addJoint(const glm::vec3& pos);
 
     Event::Type getEventType() const;
-    Status getStatus() const;
+    SkelStatus getStatus() const;
     int getUserID() const;
     const glm::vec3& getJoint(int i) const;
 
 private:
-    Status m_Status;
+    SkelStatus m_Status;
     int m_UserID;
     std::vector<glm::vec3> m_Joints;
 };

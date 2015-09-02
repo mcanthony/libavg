@@ -31,7 +31,7 @@ Skeleton::Skeleton(int userID)
 {
 }
 
-void Skeleton::setStatus(Status status)
+void Skeleton::setStatus(SkelStatus status)
 {
     m_Status = status;
 }
@@ -62,7 +62,7 @@ Event::Type Skeleton::getEventType() const
     }
 }
 
-Skeleton::Status Skeleton::getStatus() const
+Skeleton::SkelStatus Skeleton::getStatus() const
 {
     return m_Status;
 }
