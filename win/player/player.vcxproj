@@ -100,6 +100,8 @@
     <ClCompile Include="..\..\src\player\SecondaryWindow.cpp" />
     <ClCompile Include="..\..\src\player\ShadowFXNode.cpp" />
     <ClCompile Include="..\..\src\player\Shape.cpp" />
+    <ClCompile Include="..\..\src\player\Skeleton.cpp" />
+    <ClCompile Include="..\..\src\player\SkeletonEvent.cpp" />
     <ClCompile Include="..\..\src\player\SoundNode.cpp" />
     <ClCompile Include="..\..\src\player\SubscriberInfo.cpp" />
     <ClCompile Include="..\..\src\player\SVG.cpp" />
@@ -185,6 +187,8 @@
     <ClInclude Include="..\..\src\player\SecondaryWindow.h" />
     <ClInclude Include="..\..\src\player\ShadowFXNode.h" />
     <ClInclude Include="..\..\src\player\Shape.h" />
+    <ClInclude Include="..\..\src\player\Skeleton.h" />
+    <ClInclude Include="..\..\src\player\SkeletonEvent.h" />
     <ClInclude Include="..\..\src\player\SoundNode.h" />
     <ClInclude Include="..\..\src\player\SubscriberInfo.h" />
     <ClInclude Include="..\..\src\player\SVG.h" />
