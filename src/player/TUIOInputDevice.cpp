@@ -306,7 +306,7 @@ void TUIOInputDevice::processUserID(ReceivedMessageArgumentStream& args)
 
 void TUIOInputDevice::processBody(osc::ReceivedMessageArgumentStream& args)
 {
-    int userID;
+    osc::int32 userID;
     args >> userID;
     SkeletonPtr pCurSkeleton;
     for (int i=0; i<m_Skeletons.size(); ++i) {
