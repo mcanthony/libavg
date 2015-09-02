@@ -309,7 +309,7 @@ void TUIOInputDevice::processBody(osc::ReceivedMessageArgumentStream& args)
     osc::int32 userID;
     args >> userID;
     SkeletonPtr pCurSkeleton;
-    for (int i=0; i<m_Skeletons.size(); ++i) {
+    for (unsigned i=0; i<m_Skeletons.size(); ++i) {
         if (m_Skeletons[i]->getUserID() == userID) {
             pCurSkeleton = m_Skeletons[i];
             pCurSkeleton->setStatus(Skeleton::MOVE);
@@ -321,7 +321,7 @@ void TUIOInputDevice::processBody(osc::ReceivedMessageArgumentStream& args)
         pCurSkeleton = SkeletonPtr(new Skeleton(userID));
     }
     for(int i = 0; i < 25; ++i) {
-        int jointType;
+        osc::int32 jointType;
         glm::vec3 pos;
         args >> jointType >> pos.x >> pos.y >> pos.z;
         pCurSkeleton->addJoint(pos);
