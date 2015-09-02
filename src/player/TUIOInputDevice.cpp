@@ -110,6 +110,9 @@ vector<EventPtr> TUIOInputDevice::pollEvents()
         SkeletonPtr pSkeleton = *it;
         SkeletonEventPtr pEvent(new SkeletonEvent(pSkeleton));
         events.push_back(pEvent);
+        if (pEvent->getType() == Event::CURSOR_DOWN) {
+            pSkeleton->setDownSent();
+        }
         if (pEvent->getType() == Event::CURSOR_UP) {
             it = m_Skeletons.erase(it);
         } else {
@@ -152,7 +155,9 @@ void TUIOInputDevice::processBundle(const ReceivedBundle& bundle)
         vector<SkeletonPtr>::iterator it;
         for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ++it) {
             // TODO: Assuming one bundle per frame.
-            (*it)->setStatus(Skeleton::UP);
+            if ((*it)->hasDownBeenSent()) {
+                (*it)->setStatus(Skeleton::UP);
+            }
         }
         for (ReceivedBundle::const_iterator it = bundle.ElementsBegin(); 
                 it != bundle.ElementsEnd(); ++it) 
@@ -311,6 +316,9 @@ void TUIOInputDevice::processBody(osc::ReceivedMessageArgumentStream& args)
     for (unsigned i=0; i<m_Skeletons.size(); ++i) {
         if (m_Skeletons[i]->getUserID() == userID) {
             pCurSkeleton = m_Skeletons[i];
+            if (pCurSkeleton->hasDownBeenSent()) {
+                pCurSkeleton->setStatus(Skeleton::MOVE);
+            }
             pCurSkeleton->clearJoints();
             break;
         }

@@ -29,7 +29,8 @@ namespace avg {
 
 Skeleton::Skeleton(int userID)
     : m_Status(DOWN),
-      m_UserID(userID)
+      m_UserID(userID),
+      m_bDownHasBeenSent(false)
 {
 }
 
@@ -47,6 +48,16 @@ void Skeleton::addJoint(const glm::vec3& pos)
 {
     m_Joints.push_back(pos);
     AVG_ASSERT(m_Joints.size() < 26);
+}
+    
+void Skeleton::setDownSent()
+{
+    m_bDownHasBeenSent = true;
+}
+
+bool Skeleton::hasDownBeenSent() const
+{
+    return m_bDownHasBeenSent;
 }
 
 Event::Type Skeleton::getEventType() const

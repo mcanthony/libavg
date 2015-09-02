@@ -33,8 +33,8 @@ class TouchApp(app.MainDiv):
     def onInit(self):
         self.userFrame = avg.ImageNode(href="", size=self.size, parent=self)
         root = player.getRootNode()
-        root.subscribe(avg.Node.SKELETON_DOWN, self.__onSkeleton)
-        root.subscribe(avg.Node.SKELETON_MOTION, self.__onSkeleton)
+        root.subscribe(avg.Node.SKELETON_DOWN, self.__onSkeletonDown)
+        root.subscribe(avg.Node.SKELETON_MOTION, self.__onSkeletonMotion)
         root.subscribe(avg.Node.SKELETON_UP, self.__onSkeletonUp)
         app.instance.debugPanel.toggleTouchVisualization()
 
@@ -45,10 +45,16 @@ class TouchApp(app.MainDiv):
         except RuntimeError:
             pass
 
-    def __onSkeleton(self, event):
+    def __onSkeletonDown(self, event):
+        print "down"
+        self.skeletons[event.userid] = event.joints
+   
+    def __onSkeletonMotion(self, event):
+        print "motion"
         self.skeletons[event.userid] = event.joints
    
     def __onSkeletonUp(self, event):
+        print "up"
         del self.skeletons[event.userid]
 
 if __name__ == "__main__":

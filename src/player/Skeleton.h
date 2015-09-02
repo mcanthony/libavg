@@ -42,6 +42,9 @@ public:
     void clearJoints();
     void addJoint(const glm::vec3& pos);
 
+    void setDownSent();
+    bool hasDownBeenSent() const;
+
     Event::Type getEventType() const;
     SkelStatus getStatus() const;
     int getUserID() const;
@@ -50,6 +53,7 @@ public:
 private:
     SkelStatus m_Status;
     int m_UserID;
+    bool m_bDownHasBeenSent;
     std::vector<glm::vec3> m_Joints;
 };
 
