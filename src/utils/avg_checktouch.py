@@ -22,6 +22,22 @@
 
 from libavg import avg, app, player 
 
+class SkeletonVis(avg.DivNode):
+    def __init__(self, event, parent=None, **kwargs):
+        avg.DivNode.__init__(self, **kwargs)
+        self.registerInstance(self, parent)
+
+        self.jointNodes = []
+        for joint in event.joints:
+            self.jointNodes.append(
+                    avg.CircleNode(r=20, fillcolor="800000", fillopacity=1.0, 
+                    color="FF0000", strokewidth=1, sensitive=False, parent=self))
+        self.setJointPositions(event.joints)
+
+    def setJointPositions(self, joints):
+        for i, joint in enumerate(joints):
+            pos = avg.Point2D((joint[0]/5)*7680, (joint[1]/2)*3240)
+            self.jointNodes[i].pos = pos
 
 class TouchApp(app.MainDiv):
     def onArgvParsed(self, options, args, parser):
@@ -46,16 +62,15 @@ class TouchApp(app.MainDiv):
             pass
 
     def __onSkeletonDown(self, event):
-        print "down"
-        self.skeletons[event.userid] = event.joints
-   
+        self.skeletons[event.userid] = SkeletonVis(event, parent=self)
+
     def __onSkeletonMotion(self, event):
-        print "motion"
-        self.skeletons[event.userid] = event.joints
+        self.skeletons[event.userid].setJointPositions(event.joints)
    
     def __onSkeletonUp(self, event):
-        print "up"
+        self.skeletons[event.userid].unlink()
         del self.skeletons[event.userid]
+
 
 if __name__ == "__main__":
     app.App().run(TouchApp(), app_resolution="800x600", multitouch_enabled="true")
