@@ -51,6 +51,8 @@ public:
     std::vector<EventPtr> pollEvents();
 
 protected:
+    std::vector<EventPtr> pollBaseEvents();
+
     int getNumTouches() const;
     // Note that the id used here is not the libavg cursor id but a touch-driver-specific
     // id handed up from the driver level.

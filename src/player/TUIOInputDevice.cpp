@@ -103,8 +103,8 @@ void TUIOInputDevice::start()
 
 vector<EventPtr> TUIOInputDevice::pollEvents()
 {
-    vector<EventPtr> events = MultitouchInputDevice::pollEvents();
     lock_guard lock(getMutex());
+    vector<EventPtr> events = MultitouchInputDevice::pollBaseEvents();
     vector<SkeletonPtr>::iterator it;
     for (it = m_Skeletons.begin(); it != m_Skeletons.end(); ) {
         SkeletonPtr pSkeleton = *it;
